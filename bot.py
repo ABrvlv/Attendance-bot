@@ -404,10 +404,10 @@ async def reset(interaction: discord.Interaction, target: discord.Member | disco
 
 @points.command(name="leaderboard", description="Показать топ 10 пользователей по количеству очков.")
 @app_commands.describe(
-    points='Какие очки вывести? (Орешки по умолчанию)'
+    points='Какие очки вывести? (Очки по умолчанию)'
     )
 @app_commands.choices(points=[
-    discord.app_commands.Choice(name='Орешки', value=0),
+    discord.app_commands.Choice(name='Очки', value=0),
     discord.app_commands.Choice(name='Активность', value=1),
 ])
 async def leaderboard(interaction: discord.Interaction, points: int = 0):
@@ -419,7 +419,7 @@ async def leaderboard(interaction: discord.Interaction, points: int = 0):
             title = f"Таблица лидеров по активности"
         else: 
             cursor.execute("SELECT user_id, balance FROM users ORDER BY balance DESC")
-            title = f"{COIN} Таблица лидеров по орешкам {COIN}"
+            title = f"{COIN} Таблица лидеров по очкам {COIN}"
         users = cursor.fetchall()
         async def get_page(page: int):
             embed = discord.Embed(title=title, description="")
