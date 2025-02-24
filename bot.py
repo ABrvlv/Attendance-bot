@@ -19,8 +19,8 @@ intents.message_content = True  # Enable access to message content
 intents.members = True
 
 client = commands.Bot(command_prefix="!$!", intents=intents)
-nuts = app_commands.Group(name="nuts", description="Команды, относящиеся к системе очков за посещения.")
-nuts_ = app_commands.Group(name="nuts_a", description="Административные команды, относящиеся к системе очков за посещения.")
+points = app_commands.Group(name="points", description="Команды, относящиеся к системе очков за посещения.")
+points_ = app_commands.Group(name="points_a", description="Административные команды, относящиеся к системе очков за посещения.")
 
 active_giveaways = []
 
@@ -166,7 +166,7 @@ async def give_role(interaction: discord.Interaction, role: discord.Role):
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"give_role: {e}")
 
-@nuts.command(name="balance", description="Проверить количество очков.")
+@points.command(name="balance", description="Проверить количество очков.")
 @app_commands.describe(member='Участник (необязательно)')
 async def balance(interaction: discord.Interaction, member: discord.Member = None):
     try:
@@ -189,7 +189,7 @@ async def balance(interaction: discord.Interaction, member: discord.Member = Non
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"balance: {e}")
 
-@nuts_.command(name="add", description="Добавить очки пользователю или роли.")
+@points_.command(name="add", description="Добавить очки пользователю или роли.")
 @app_commands.describe(target='Участник или роль', amount='Количество')
 @app_commands.checks.has_permissions(manage_roles=True)
 async def add(interaction: discord.Interaction, target: discord.Member | discord.Role, amount: int):
@@ -216,7 +216,7 @@ async def add(interaction: discord.Interaction, target: discord.Member | discord
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"add: {e}")
 
-@nuts_.command(name="thread_add", description="Добавить очки записанным в ветке.")
+@points_.command(name="thread_add", description="Добавить очки записанным в ветке.")
 @app_commands.describe(amount='Количество')
 @app_commands.checks.has_permissions(manage_roles=True)
 async def thread_add(interaction: discord.Interaction, amount: int):
@@ -266,7 +266,7 @@ async def thread_add(interaction: discord.Interaction, amount: int):
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"thread_add: {e}")
 
-@nuts_.command(name="reaction_add", description="Добавить очки тем, кто поставил реакцию ✅.")
+@points_.command(name="reaction_add", description="Добавить очки тем, кто поставил реакцию ✅.")
 @app_commands.describe(amount='Количество')
 @app_commands.checks.has_permissions(manage_roles=True)
 async def reaction_add(interaction: discord.Interaction, amount: int):
@@ -322,7 +322,7 @@ async def reaction_add(interaction: discord.Interaction, amount: int):
         logger.error(f"reaction_add: {e}")
 
 
-@nuts_.command(name="remove", description="Удалить очки пользователю или роли.")
+@points_.command(name="remove", description="Удалить очки пользователю или роли.")
 @app_commands.describe(target='Пользователь или роль', amount='Количество', points='Какие очки удалить? (Текущие по умолчанию)')
 @app_commands.choices(points=[
     discord.app_commands.Choice(name='Текущие', value=0),
@@ -362,7 +362,7 @@ async def remove(interaction: discord.Interaction, target: discord.Member | disc
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"remove: {e}")
 
-@nuts_.command(name="reset", description="Обнулить очки пользователя или роли.")
+@points_.command(name="reset", description="Обнулить очки пользователя или роли.")
 @app_commands.describe(target='Пользователь или роль', points='Какие очки обнулить? (Текущие по умолчанию)')
 @app_commands.choices(points=[
     discord.app_commands.Choice(name='Текущие', value=0),
@@ -402,7 +402,7 @@ async def reset(interaction: discord.Interaction, target: discord.Member | disco
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"reset: {e}")
 
-@nuts.command(name="leaderboard", description="Показать топ 10 пользователей по количеству очков.")
+@points.command(name="leaderboard", description="Показать топ 10 пользователей по количеству очков.")
 @app_commands.describe(
     points='Какие очки вывести? (Орешки по умолчанию)'
     )
@@ -436,7 +436,7 @@ async def leaderboard(interaction: discord.Interaction, points: int = 0):
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"leaderboard: {e}")
 
-@nuts_.command(name="export", description="Экспортировать всех пользователей и их очки в csv файл.")
+@points_.command(name="export", description="Экспортировать всех пользователей и их очки в csv файл.")
 @app_commands.describe(sort='Сортировать по: (Постоянный баланс по умолчанию)')
 @app_commands.choices(sort=[
     discord.app_commands.Choice(name='Имена', value=0),
@@ -475,7 +475,7 @@ async def export(interaction: discord.Interaction, sort: int = 1):
         await interaction.followup.send(f"An error occurred: {e}", ephemeral=True)
         logger.error(f"export: {e}")
 
-@nuts_.command(name="log", description="Экспортировать лог-файл в канал.")
+@points_.command(name="log", description="Экспортировать лог-файл в канал.")
 @app_commands.checks.has_permissions(manage_roles=True)
 async def log(interaction: discord.Interaction):
     try:
@@ -489,7 +489,7 @@ async def log(interaction: discord.Interaction):
         logger.error(f"export: {e}")
 
 
-@nuts_.command(name="giveaway", description="Начать розыгрыш.")
+@points_.command(name="giveaway", description="Начать розыгрыш.")
 @app_commands.describe(prize="Предмет для розыгрыша.", points="Сколько очков стоит участие?", duration="Длительность розыгрыша в часах.")
 @app_commands.checks.has_permissions(manage_roles=True)
 async def giveaway(interaction: discord.Interaction, prize: str, points: int, duration: int):
@@ -552,8 +552,8 @@ async def daily_task():
         logger.error(f"daily_task: Channel with ID {BACKUP_GUILD_CHANNEL} not found.")
 
 
-client.tree.add_command(nuts)
-client.tree.add_command(nuts_)
+client.tree.add_command(points)
+client.tree.add_command(points_)
 
 # Global error handler for all commands
 @client.tree.error
